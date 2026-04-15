@@ -9,7 +9,7 @@ st.set_page_config(page_title="HospitData Analytics", layout="wide")
 if 'db_patients' not in st.session_state:
     # On crée quelques données de départ pour que ce ne soit pas vide
     data = {
-        'Heure': pd.date_range(start='2026-04-15', periods=5, freq='H'),
+        'Heure': pd.date_range(start='2026-04-15', periods=5, freq='h'),
         'Patient': ['Patient A', 'Patient B', 'Patient C', 'Patient D', 'Patient E'],
         'Température': [37.2, 38.5, 36.9, 39.1, 37.5],
         'Douleur': [2, 5, 1, 8, 3]
