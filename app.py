@@ -60,3 +60,16 @@ with tab2:
 
     st.write("**Tableau des données brutes**")
     st.dataframe(df, use_container_width=True)
+
+    st.divider()
+    st.subheader("📥 Exporter les données")
+
+    # Transformer le tableau en fichier CSV
+    csv = df.to_csv(index=False).encode('utf-8')
+
+    st.download_button(
+    label="Télécharger le rapport (CSV)",
+    data=csv,
+    file_name='rapport_hospitalier.csv',
+    mime='text/csv',
+    )
