@@ -1,9 +1,10 @@
- HospitData - Système de Gestion Clinique
+## HospitData - Système de Gestion Clinique
 
 HospitData est une solution de santé numérique (e-Health) avancée conçue pour transformer la saisie de données médicales papier en un tableau de bord analytique intelligent. L'application permet une surveillance proactive des patients grâce à un algorithme de triage en temps réel.
  Lien de l'application
-
-Accéder à l'interface HospitData en ligne
+ 
+ https://collecte-hopital-djomo-audrey.streamlit.app
+ 
  Caractéristiques de Qualité (Critères du Devoir)
  Créativité & Imagination
 
@@ -15,7 +16,7 @@ L'application va au-delà d'un simple formulaire. Elle simule un Dossier Médica
 
     Visualisation Multi-dimensionnelle : Utilisation de graphiques croisant l'IMC, le risque clinique et la douleur.
 
-Robustesse & Intelligence
+## Robustesse & Intelligence
 
 Le système possède une couche de traitement logique (Backend) qui sécurise la donnée :
 
@@ -25,14 +26,14 @@ Le système possède une couche de traitement logique (Backend) qui sécurise la
 
     Données de Démonstration : L'application est livrée avec 10 dossiers patients pré-enregistrés pour une analyse immédiate dès le lancement.
 
- Efficacité & Expérience Utilisateur (UX)
+## Efficacité & Expérience Utilisateur (UX)
 
     Interface par Onglets : Séparation claire entre la "Saisie" (Infirmier) et "l'Analyse" (Médecin).
 
     Interactivité Totale : Les graphiques Plotly permettent de zoomer sur un patient spécifique.
 
     Portabilité des données : Exportation instantanée en format CSV pour une utilisation sur Excel ou logiciels tiers.
- Technologies utilisées
+## Technologies utilisées
 
     Langage : Python 3.x
 
