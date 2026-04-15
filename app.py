@@ -17,9 +17,9 @@ if 'db_patients' not in st.session_state:
     st.session_state.db_patients = pd.DataFrame(data)
 
 # --- INTERFACE ---
-st.title("🏥 HospitData : Collecte & Analyse")
+st.title(" HospitData : Collecte & Analyse")
 
-tab1, tab2 = st.tabs(["📥 Saisie des Données", "📊 Tableau de Bord (Diagrammes)"])
+tab1, tab2 = st.tabs([" Saisie des Données", " Tableau de Bord (Diagrammes)"])
 
 with tab1:
     st.subheader("Nouveau Relevé Médical")
@@ -62,7 +62,7 @@ with tab2:
     st.dataframe(df, use_container_width=True)
 
     st.divider()
-    st.subheader("📥 Exporter les données")
+    st.subheader(" Exporter les données")
 
     # Transformer le tableau en fichier CSV
     csv = df.to_csv(index=False).encode('utf-8')
