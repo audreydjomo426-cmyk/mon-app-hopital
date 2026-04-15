@@ -1,6 +1,7 @@
 ## HospitData - Système de Gestion Clinique
 
 HospitData est une solution de santé numérique (e-Health) avancée conçue pour transformer la saisie de données médicales papier en un tableau de bord analytique intelligent. L'application permet une surveillance proactive des patients grâce à un algorithme de triage en temps réel.
+ 
  Lien de l'application
  
  https://collecte-hopital-djomo-audrey.streamlit.app
