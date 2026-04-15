@@ -1,43 +1,64 @@
-# mon-app-hopital
-# HospitData - Système de Collecte & Analyse Médicale
+ HospitData - Système de Gestion Clinique
 
-**HospitData** est une application web innovante conçue pour la collecte et la visualisation en temps réel des constantes vitales des patients en milieu hospitalier. Ce projet répond aux exigences de robustesse, d'efficacité et de créativité dans le secteur de la santé.
+HospitData est une solution de santé numérique (e-Health) avancée conçue pour transformer la saisie de données médicales papier en un tableau de bord analytique intelligent. L'application permet une surveillance proactive des patients grâce à un algorithme de triage en temps réel.
+ Lien de l'application
 
-## Lien de l'application
-[Accéder à l'application en ligne](https://collecte-hopital-djomo-audrey.streamlit.app/)
+Accéder à l'interface HospitData en ligne
+ Caractéristiques de Qualité (Critères du Devoir)
+ Créativité & Imagination
 
----
+L'application va au-delà d'un simple formulaire. Elle simule un Dossier Médical Partagé (DMP) complet :
 
-## Caractéristiques de Qualité
+    Profil Morphologique : Intégration de l'âge, de la taille et du poids.
 
-### Créativité & Imagination
-L'application ne se contente pas de stocker des chiffres. Elle transforme les données médicales en **indicateurs visuels interactifs**. Le choix du secteur hospitalier a permis de concevoir une interface adaptée aux besoins critiques des soignants (code couleur pour les alertes de température, suivi de la douleur).
+    Sécurité Patient : Gestion des groupes sanguins, des allergies et des maladies chroniques (Diabète, Hypertension, etc.).
 
-###  Robustesse
-Le système intègre des mécanismes de contrôle de saisie pour garantir l'intégrité des données :
-- **Validation des plages :** Empêche la saisie de températures ou de fréquences cardiaques physiologiquement impossibles.
-- **Gestion des erreurs :** Détection automatique des champs obligatoires manquants.
-- **Architecture Cloud :** Déploiement stable via Streamlit Cloud avec gestion automatisée des dépendances.
+    Visualisation Multi-dimensionnelle : Utilisation de graphiques croisant l'IMC, le risque clinique et la douleur.
 
-### Efficacité
-- **Temps Réel :** Les graphiques se mettent à jour instantanément après chaque soumission de formulaire.
-- **Dashboard Analytique :** Centralisation des données pour une lecture rapide par le médecin-chef.
-- **Exportation :** Possibilité d'extraire les données pour une utilisation externe (Format CSV).
+Robustesse & Intelligence
 
----
+Le système possède une couche de traitement logique (Backend) qui sécurise la donnée :
 
-##  Technologies utilisées
-* **Langage :** Python 3.8.10
-* **Framework Web :** Streamlit
-* **Analyse de données :** Pandas
-* **Visualisation :** Plotly Express
-* **Déploiement :** GitHub & Streamlit Cloud
+    Calculateur d'IMC automatique : Évite les erreurs de calcul manuel.
 
----
+    Algorithme de Triage (Score de Risque) : Analyse automatique des constantes pour classer les patients (🟢 Stable, 🟠 À surveiller, 🔴 Critique).
 
-## Installation locale
-Si vous souhaitez tester l'application sur votre propre machine :
+    Données de Démonstration : L'application est livrée avec 10 dossiers patients pré-enregistrés pour une analyse immédiate dès le lancement.
 
-1. Clonez le dépôt :
-   ```bash
-   git clone [https://github.com/VOTRE_PSEUDO/mon-app-hopital.git](https://github.com/VOTRE_PSEUDO/mon-app-hopital.git)
+ Efficacité & Expérience Utilisateur (UX)
+
+    Interface par Onglets : Séparation claire entre la "Saisie" (Infirmier) et "l'Analyse" (Médecin).
+
+    Interactivité Totale : Les graphiques Plotly permettent de zoomer sur un patient spécifique.
+
+    Portabilité des données : Exportation instantanée en format CSV pour une utilisation sur Excel ou logiciels tiers.
+ Technologies utilisées
+
+    Langage : Python 3.x
+
+    Framework Web : Streamlit (Interface réactive)
+
+    Analyse de données : Pandas (Moteur de calcul)
+
+    Visualisation : Plotly Express (Graphiques dynamiques)
+
+    Déploiement : GitHub & Streamlit Cloud
+
+ Installation locale
+
+Pour exécuter ce projet localement :
+
+    Cloner le projet :
+    Bash
+
+git clone https://github.com/VOTRE_PSEUDO/mon-app-hopital.git
+
+Installer les dépendances :
+Bash
+
+pip install -r requirements.txt
+
+Lancer l'application :
+Bash
+
+streamlit run app.py
