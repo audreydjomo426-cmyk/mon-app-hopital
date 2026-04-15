@@ -47,7 +47,7 @@ if 'db_patients' not in st.session_state:
     st.session_state.db_patients = pd.DataFrame(pre_data)
 
 # --- INTERFACE ---
-st.title("🏥 HospitData : Système de Gestion Clinique")
+st.title("🏥 HospitData : Système de Collecte & Analyse Médicale")
 
 tab1, tab2 = st.tabs(["📥 Saisie des Données", "📊 Tableau de Bord & Analyse"])
 
