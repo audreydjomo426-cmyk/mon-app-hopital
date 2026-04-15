@@ -1,75 +1,139 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
-import plotly.express as px # Pour des graphiques interactifs
+import plotly.express as px
 
-st.set_page_config(page_title="HospitData Analytics", layout="wide")
+# Configuration de la page
+st.set_page_config(page_title="HospitData Ultra Pro", layout="wide", page_icon="🏥")
 
-# --- SIMULATION DE BASE DE DONNÉES ---
+# --- INITIALISATION DE LA BASE DE DONNÉES ---
 if 'db_patients' not in st.session_state:
-    # On crée quelques données de départ pour que ce ne soit pas vide
-    data = {
-        'Heure': pd.date_range(start='2026-04-15', periods=5, freq='h'),
-        'Patient': ['Patient A', 'Patient B', 'Patient C', 'Patient D', 'Patient E'],
-        'Température': [37.2, 38.5, 36.9, 39.1, 37.5],
-        'Douleur': [2, 5, 1, 8, 3]
-    }
-    st.session_state.db_patients = pd.DataFrame(data)
+    # Structure complète avec toutes les variables demandées
+    st.session_state.db_patients = pd.DataFrame(columns=[
+        'Heure', 'Patient', 'Âge', 'Groupe Sanguin', 'Taille (cm)', 'Poids (kg)', 
+        'IMC', 'Antécédents', 'Allergies', 'Température (°C)', 'Pouls (BPM)', 'Douleur', 'Risque'
+    ])
 
 # --- INTERFACE ---
-st.title(" HospitData : Collecte & Analyse")
+st.title("HospitData : Système de Gestion Clinique")
 
-tab1, tab2 = st.tabs([" Saisie des Données", " Tableau de Bord (Diagrammes)"])
+tab1, tab2 = st.tabs(["Saisie des Données", "Tableau de Bord & Analyse"])
 
 with tab1:
-    st.subheader("Nouveau Relevé Médical")
-    with st.form("form_hopital"):
-        nom = st.text_input("Nom du Patient")
-        temp = st.number_input("Température (°C)", 35.0, 42.0, 37.0)
-        douleur = st.slider("Niveau de Douleur", 0, 10)
-        submit = st.form_submit_button("Enregistrer")
+    st.subheader("📝 Nouvelle Fiche Patient")
+    with st.form("form_complet", clear_on_submit=True):
+        c1, c2, c3 = st.columns(3)
+        
+        with c1:
+            st.markdown("**Identité**")
+            nom = st.text_input("Nom du Patient")
+            age = st.number_input("Âge", 0, 120, 30)
+            groupe_sanguin = st.selectbox("Groupe Sanguin", ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-", "Inconnu"])
+            
+        with c2:
+            st.markdown("**⚖️ Morphologie**")
+            taille = st.number_input("Taille (cm)", 50, 250, 170)
+            poids = st.number_input("Poids (kg)", 2.0, 250.0, 70.0)
+            st.caption("L'IMC est calculé automatiquement à l'enregistrement.")
+            
+        with c3:
+            st.markdown("**Antécédents & Sécurité**")
+            maladies = st.multiselect("Maladies Chroniques", ["Diabète", "Hypertension", "Asthme", "Insuffisance Cardiaque"])
+            allergies = st.text_input("Allergies spécifiques")
+            
+        st.divider()
+        st.markdown("**Signes Vitaux actuels**")
+        v1, v2, v3 = st.columns(3)
+        temp = v1.number_input("Température (°C)", 34.0, 43.0, 37.0, step=0.1)
+        pouls = v2.number_input("Pouls (BPM)", 30, 220, 75)
+        douleur = v3.select_slider("Niveau de Douleur", options=range(11))
+
+        submit = st.form_submit_button("Enregistrer le dossier complet")
         
         if submit:
-            nouvelle_ligne = pd.DataFrame({'Heure': [pd.Timestamp.now()], 'Patient': [nom], 'Température': [temp], 'Douleur': [douleur]})
-            st.session_state.db_patients = pd.concat([st.session_state.db_patients, nouvelle_ligne], ignore_index=True)
-            st.success("Donnée ajoutée au système !")
+            if not nom:
+                st.error("Veuillez entrer le nom du patient.")
+            else:
+                # CALCULS AUTOMATIQUES
+                # 1. IMC
+                imc = round(poids / ((taille/100)**2), 1)
+                
+                # 2. Score de Risque Intelligent
+                risque = "🟢 Stable"
+                if temp > 38.5 or douleur > 7 or (age > 75 and temp > 38.0):
+                    risque = "🔴 Critique"
+                elif temp > 37.8 or len(maladies) > 0 or imc > 30:
+                    risque = "🟠 À surveiller"
+
+                # Création de la ligne
+                nouvelle_ligne = pd.DataFrame([{
+                    'Heure': pd.Timestamp.now().strftime('%H:%M:%S'),
+                    'Patient': nom,
+                    'Âge': age,
+                    'Groupe Sanguin': groupe_sanguin,
+                    'Taille (cm)': taille,
+                    'Poids (kg)': poids,
+                    'IMC': imc,
+                    'Antécédents': ", ".join(maladies) if maladies else "Aucun",
+                    'Allergies': allergies if allergies else "Aucune",
+                    'Température (°C)': temp,
+                    'Pouls (BPM)': pouls,
+                    'Douleur': douleur,
+                    'Risque': risque
+                }])
+                
+                st.session_state.db_patients = pd.concat([st.session_state.db_patients, nouvelle_ligne], ignore_index=True)
+                st.success(f"Dossier enregistré pour {nom} (IMC: {imc})")
+                st.balloons()
 
 with tab2:
-    st.subheader("Analyse des Constantes en Temps Réel")
+    st.subheader("Analyse des Données en Temps Réel")
     df = st.session_state.db_patients
 
-    # Indicateurs clés (Metrics)
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Total Patients", len(df))
-    col2.metric("Temp. Moyenne", f"{round(df['Température'].mean(), 1)} °C")
-    col3.metric("Alerte Douleur (>7)", len(df[df['Douleur'] > 7]))
+    if not df.empty:
+        # Indicateurs clés
+        m1, m2, m3, m4 = st.columns(4)
+        m1.metric("Total Patients", len(df))
+        m2.metric("Cas Critiques (🔴)", len(df[df['Risque'] == "🔴 Critique"]))
+        m3.metric("Temp. Moyenne", f"{round(df['Température (°C)'].mean(), 1)} °C")
+        m4.metric("IMC Moyen", round(df['IMC'].mean(), 1))
 
-    # Diagrammes
-    st.divider()
-    c1, c2 = st.columns(2)
-    
-    with c1:
-        st.write("**Évolution de la Température**")
-        fig_temp = px.line(df, x='Heure', y='Température', markers=True, color_discrete_sequence=['red'])
-        st.plotly_chart(fig_temp, use_container_width=True)
+        st.divider()
         
-    with c2:
-        st.write("**Répartition des Niveaux de Douleur**")
-        fig_bar = px.bar(df, x='Patient', y='Douleur', color='Douleur', color_continuous_scale='Viridis')
-        st.plotly_chart(fig_bar, use_container_width=True)
+        # Diagrammes
+        c1, c2 = st.columns(2)
+        
+        with c1:
+            st.write("**Analyse de la Température par Risque**")
+            fig_temp = px.bar(df, x='Patient', y='Température (°C)', color='Risque',
+                             color_discrete_map={"🟢 Stable": "green", "🟠 À surveiller": "orange", "🔴 Critique": "red"})
+            st.plotly_chart(fig_temp, use_container_width=True)
+            
+        with c2:
+            st.write("**Répartition des Groupes Sanguins**")
+            fig_pie = px.pie(df, names='Groupe Sanguin', hole=0.4, color_discrete_sequence=px.colors.qualitative.Pastel)
+            st.plotly_chart(fig_pie, use_container_width=True)
 
-    st.write("**Tableau des données brutes**")
-    st.dataframe(df, use_container_width=True)
+        # Tableau des données
+        st.write("**Registre Complet des Patients**")
+        st.dataframe(df, use_container_width=True)
 
-    st.divider()
-    st.subheader(" Exporter les données")
+        # Exportation
+        csv = df.to_csv(index=False).encode('utf-8')
+        st.download_button(
+            label="Télécharger le registre complet (CSV)",
+            data=csv,
+            file_name='rapport_HospitData_complet.csv',
+            mime='text/csv',
+        )
+    else:
+        st.info("Aucune donnée enregistrée. Veuillez utiliser l'onglet Saisie.")
 
-    # Transformer le tableau en fichier CSV
-    csv = df.to_csv(index=False).encode('utf-8')
+# --- BARRE LATÉRALE (Sidebar) ---
+st.sidebar.title("Administration")
+if st.sidebar.button("Réinitialiser la base"):
+    st.session_state.db_patients = pd.DataFrame(columns=st.session_state.db_patients.columns)
+    st.rerun()
 
-    st.download_button(
-    label="Télécharger le rapport (CSV)",
-    data=csv,
-    file_name='rapport_hospitalier.csv',
-    mime='text/csv',
-    )
+st.sidebar.divider()
+st.sidebar.write("**HospitData v2.0**")
+st.sidebar.caption("Outil de démonstration hospitalière")
