@@ -133,3 +133,84 @@ st.sidebar.title("🛠️ Administration")
 if st.sidebar.button("🗑️ Vider la base"):
     st.session_state.db_patients = pd.DataFrame(columns=st.session_state.db_patients.columns)
     st.rerun()
+    import streamlit as st
+import pandas as pd
+import plotly.express as px
+import numpy as np
+import random
+
+# Configuration
+st.set_page_config(page_title="HospitData Analytics Pro", layout="wide", page_icon="🏥")
+
+# --- INITIALISATION (10 PATIENTS) ---
+if 'db_patients' not in st.session_state:
+    noms = ["Jean Dupont", "Marie Claire", "Ahmed Bakari", "Sophie Martin", "Luc Durand", 
+            "Elena Rossi", "Marc Lefebvre", "Alice Wong", "Paul Moreau", "Yasmine Traoré"]
+    pre_data = []
+    for i in range(10):
+        age = random.randint(18, 85)
+        temp = random.uniform(36.2, 39.8)
+        poids = random.uniform(50, 100)
+        taille = random.randint(155, 190)
+        imc = round(poids / ((taille/100)**2), 1)
+        douleur = random.randint(0, 10)
+        pre_data.append({
+            'Heure': f"0{9+i}:00", 'Patient': noms[i], 'Âge': age, 
+            'Poids (kg)': round(poids, 1), 'Taille (cm)': taille, 'IMC': imc,
+            'Température': round(temp, 1), 'Douleur': douleur,
+            'Risque': "🔴 Critique" if temp > 38.5 else "🟢 Stable"
+        })
+    st.session_state.db_patients = pd.DataFrame(pre_data)
+
+st.title("🏥 HospitData : Analyse & Régression Linéaire")
+
+tab1, tab2, tab3 = st.tabs(["📥 Saisie", "📊 Graphiques", "🧬 Modèles Prédictifs (IA)"])
+
+# --- TAB 1 & 2 (Identiques à avant mais simplifiés ici pour la lecture) ---
+with tab1:
+    st.info("Utilisez ce formulaire pour ajouter de nouveaux patients à l'étude.")
+    # ... (Garder votre formulaire de saisie ici)
+
+with tab2:
+    df = st.session_state.db_patients
+    st.subheader("Visualisation Descriptive")
+    c1, c2 = st.columns(2)
+    c1.plotly_chart(px.bar(df, x='Patient', y='Température', color='Risque'), use_container_width=True)
+    c2.plotly_chart(px.scatter(df, x='Âge', y='IMC', size='Douleur', color='Risque'), use_container_width=True)
+
+# --- NOUVEAU : TAB 3 - RÉGRESSION LINÉAIRE ---
+with tab3:
+    st.header("🔬 Analyse Statistique Avancée")
+    df = st.session_state.db_patients
+    
+    if len(df) > 2:
+        col_left, col_right = st.columns(2)
+        
+        with col_left:
+            st.subheader("1. Régression Linéaire Simple")
+            st.write("Objectif : Prédire la **Température** en fonction de l'**Âge**.")
+            
+            # Calcul de la régression simple (y = ax + b) avec Numpy
+            x = df['Âge']
+            y = df['Température']
+            a, b = np.polyfit(x, y, 1)
+            
+            fig_reg = px.scatter(df, x='Âge', y='Température', trendline="ols", 
+                                 title=f"Équation : Temp = {a:.3f}*Âge + {b:.2f}")
+            st.plotly_chart(fig_reg, use_container_width=True)
+            st.write(f"💡 **Interprétation :** Pour chaque année d'âge supplémentaire, la température varie de {a:.3f}°C.")
+
+        with col_right:
+            st.subheader("2. Régression Linéaire Multiple (Concept)")
+            st.write("Objectif : Estimer l'**Indice de Fragilité** (combiné).")
+            
+            # Simulation d'une régression multiple (Score = 0.5*Âge + 0.2*IMC + 0.3*Douleur)
+            df['Score_Fragilité'] = (df['Âge'] * 0.5) + (df['IMC'] * 0.2) + (df['Douleur'] * 0.3)
+            
+            fig_multi = px.scatter_3d(df, x='Âge', y='IMC', z='Douleur', color='Score_Fragilité',
+                                     title="Modèle 3D de Régression Multiple")
+            st.plotly_chart(fig_multi, use_container_width=True)
+            st.info("Le score de fragilité est calculé par une combinaison linéaire de plusieurs facteurs de risque.")
+
+    else:
+        st.warning("Ajoutez au moins 3 patients pour activer les modèles statistiques.")s
